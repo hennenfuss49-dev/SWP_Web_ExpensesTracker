@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Lebensmittel",
+    "category": "Essen",
+    "amount": 48.5,
+    "date": "2026-09-21"
+  },
+  {
+    "id": 2,
+    "title": "Bus Ticket",
+    "category": "Transport",
+    "amount": 12,
+    "date": "2026-09-22"
+  }
+]
