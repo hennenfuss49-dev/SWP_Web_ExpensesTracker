@@ -1,3 +1,35 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
+import type { Expense } from '../types/Expense'
+import type { Income } from '../types/Income'
+
+const expenses = ref<Expense[]>([])
+const incomes = ref<Income[]>([])
+
+const totalExpenses = computed(() =>
+  expenses.value.reduce((sum, expense) => sum + expense.amount, 0)
+)
+
+const totalIncomes = computed(() =>
+  incomes.value.reduce((sum, income) => sum + income.amount, 0)
+)
+
+const balance = computed(() => totalIncomes.value - totalExpenses.value)
+
+async function loadData() {
+  const [expenseResponse, incomeResponse] = await Promise.all([
+    fetch('/expenses.json'),
+    fetch('/incomes.json')
+  ])
+
+  expenses.value = await expenseResponse.json() as Expense[]
+  incomes.value = await incomeResponse.json() as Income[]
+}
+
+onMounted(loadData)
+</script>
+
 <template>
   <div class="dashboard">
     <section class="welcome">
@@ -11,33 +43,39 @@
         </p>
       </div>
 
-      <RouterLink to="/expenses" class="primary-button">
-        Ausgaben anzeigen
-      </RouterLink>
+      <div class="welcome-actions">
+        <RouterLink to="/incomes" class="income-button">
+          Einnahmen anzeigen
+        </RouterLink>
+
+        <RouterLink to="/expenses" class="primary-button">
+          Ausgaben anzeigen
+        </RouterLink>
+      </div>
     </section>
 
     <section class="cards">
-      <div class="card">
+      <RouterLink to="/expenses" class="card">
         <div class="card-header">
           <span>Ausgaben</span>
           <span class="icon red">↓</span>
         </div>
 
-        <strong>0,00 €</strong>
+        <strong class="negative">− {{ totalExpenses.toFixed(2) }} €</strong>
 
-        <p>Dieser Monat</p>
-      </div>
+        <p>{{ expenses.length }} Einträge</p>
+      </RouterLink>
 
-      <div class="card">
+      <RouterLink to="/incomes" class="card">
         <div class="card-header">
           <span>Einnahmen</span>
           <span class="icon green">↑</span>
         </div>
 
-        <strong>0,00 €</strong>
+        <strong class="positive">+ {{ totalIncomes.toFixed(2) }} €</strong>
 
-        <p>Dieser Monat</p>
-      </div>
+        <p>{{ incomes.length }} Einträge</p>
+      </RouterLink>
 
       <div class="card">
         <div class="card-header">
@@ -45,7 +83,9 @@
           <span class="icon blue">€</span>
         </div>
 
-        <strong>0,00 €</strong>
+        <strong :class="balance >= 0 ? 'positive' : 'negative'">
+          {{ balance.toFixed(2) }} €
+        </strong>
 
         <p>Aktueller Stand</p>
       </div>
@@ -135,6 +175,31 @@
   background: #1d4ed8;
 }
 
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.income-button {
+  text-decoration: none;
+  border-radius: 8px;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  background: #16a34a;
+  color: white;
+
+  padding: 11px 18px;
+
+  transition: 0.2s;
+}
+
+.income-button:hover {
+  background: #15803d;
+}
+
 .secondary-button {
   background: white;
   color: #2563eb;
@@ -163,6 +228,16 @@
   border-radius: 14px;
 
   padding: 22px;
+
+  color: inherit;
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+a.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -15px rgba(17, 24, 39, 0.35);
 }
 
 .card-header {
@@ -181,6 +256,14 @@
 
   font-size: 25px;
   color: #111827;
+}
+
+.card strong.positive {
+  color: #16a34a;
+}
+
+.card strong.negative {
+  color: #dc2626;
 }
 
 .card p {

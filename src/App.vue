@@ -14,6 +14,7 @@
         <nav class="navigation">
           <RouterLink to="/">Dashboard</RouterLink>
           <RouterLink to="/expenses">Ausgaben</RouterLink>
+          <RouterLink to="/incomes" class="nav-income">Einnahmen</RouterLink>
         </nav>
       </div>
     </header>
@@ -131,6 +132,11 @@ select {
 .navigation a.router-link-active {
   background: #eff6ff;
   color: #2563eb;
+}
+
+.navigation a.nav-income.router-link-active {
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 /* Main */
