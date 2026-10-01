@@ -3,6 +3,7 @@ import type { Expense } from '../types/Expense'
 
 defineProps<{
   expenses: Expense[]
+  selectedId?: number
 }>()
 
 const emit = defineEmits<{
@@ -17,7 +18,7 @@ const emit = defineEmits<{
         <tr>
           <th>Titel</th>
           <th>Kategorie</th>
-          <th>Betrag</th>
+          <th class="right">Betrag</th>
         </tr>
       </thead>
 
@@ -25,10 +26,18 @@ const emit = defineEmits<{
         <tr
           v-for="expense in expenses"
           :key="expense.id"
+          :class="{ selected: expense.id === selectedId }"
           @click="emit('select', expense)"
         >
-          <td class="title">
-            {{ expense.title }}
+          <td>
+            <div class="title-cell">
+              <span class="dot">↓</span>
+
+              <div>
+                <span class="title">{{ expense.title }}</span>
+                <span class="date">{{ expense.date }}</span>
+              </div>
+            </div>
           </td>
 
           <td>
@@ -37,8 +46,8 @@ const emit = defineEmits<{
             </span>
           </td>
 
-          <td class="amount">
-            {{ expense.amount.toFixed(2) }} €
+          <td class="amount right">
+            − {{ expense.amount.toFixed(2) }} €
           </td>
         </tr>
       </tbody>
@@ -73,11 +82,15 @@ th {
 }
 
 td {
-  padding: 16px 20px;
+  padding: 14px 20px;
 
   border-top: 1px solid #f0f0f0;
 
   font-size: 14px;
+}
+
+.right {
+  text-align: right;
 }
 
 tbody tr {
@@ -89,9 +102,48 @@ tbody tr:hover {
   background: #f9fafb;
 }
 
+tbody tr.selected {
+  background: #fef2f2;
+  box-shadow: inset 3px 0 0 #dc2626;
+}
+
+.title-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dot {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  background: #fef2f2;
+  color: #dc2626;
+
+  border-radius: 8px;
+
+  font-weight: 700;
+}
+
 .title {
+  display: block;
+
   font-weight: 600;
   color: #111827;
+}
+
+.date {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #9ca3af;
+  font-size: 12px;
 }
 
 .category {
@@ -99,17 +151,19 @@ tbody tr:hover {
 
   padding: 4px 9px;
 
-  background: #f3f4f6;
+  background: #fff1f2;
 
   border-radius: 6px;
 
-  color: #4b5563;
+  color: #b91c1c;
 
   font-size: 12px;
+  font-weight: 500;
 }
 
 .amount {
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+  color: #dc2626;
+  white-space: nowrap;
 }
 </style>

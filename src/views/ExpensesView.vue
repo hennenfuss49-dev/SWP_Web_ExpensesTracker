@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import ExpenseList from '../components/ExpenseList.vue'
 import ExpenseDetail from '../components/ExpenseDetail.vue'
@@ -8,6 +8,10 @@ import type { Expense } from '../types/Expense'
 
 const expenses = ref<Expense[]>([])
 const selectedExpense = ref<Expense | null>(null)
+
+const total = computed(() =>
+  expenses.value.reduce((sum, expense) => sum + expense.amount, 0)
+)
 
 async function loadExpenses() {
   const response = await fetch('/expenses.json')
@@ -40,6 +44,15 @@ onMounted(loadExpenses)
       </button>
     </div>
 
+    <section class="summary">
+      <div class="summary-icon">↓</div>
+
+      <div>
+        <span>Gesamte Ausgaben</span>
+        <strong>{{ total.toFixed(2) }} €</strong>
+      </div>
+    </section>
+
     <div class="content-grid">
 
       <section class="list-card">
@@ -53,6 +66,7 @@ onMounted(loadExpenses)
 
         <ExpenseList
           :expenses="expenses"
+          :selected-id="selectedExpense?.id"
           @select="selectExpense"
         />
       </section>
@@ -84,7 +98,7 @@ onMounted(loadExpenses)
 .eyebrow {
   margin: 0 0 5px;
 
-  color: #2563eb;
+  color: #dc2626;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -108,7 +122,7 @@ onMounted(loadExpenses)
 
   padding: 11px 18px;
 
-  background: #2563eb;
+  background: #dc2626;
   color: white;
 
   border-radius: 8px;
@@ -120,7 +134,51 @@ onMounted(loadExpenses)
 }
 
 .add-button:hover {
-  background: #1d4ed8;
+  background: #b91c1c;
+}
+
+/* Summary */
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 22px 24px;
+
+  background: linear-gradient(135deg, #dc2626, #f87171);
+  color: white;
+
+  border-radius: 14px;
+
+  box-shadow: 0 10px 25px -12px rgba(220, 38, 38, 0.6);
+}
+
+.summary-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.2);
+
+  border-radius: 12px;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.summary span {
+  display: block;
+
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.summary strong {
+  font-size: 26px;
 }
 
 /* Content */

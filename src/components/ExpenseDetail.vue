@@ -16,10 +16,10 @@ defineProps<{
     <div v-if="expense" class="details">
 
       <div class="amount-box">
-        <span>Betrag</span>
+        <span>Ausgegeben</span>
 
         <strong>
-          {{ expense.amount.toFixed(2) }} €
+          − {{ expense.amount.toFixed(2) }} €
         </strong>
       </div>
 
@@ -41,12 +41,12 @@ defineProps<{
     </div>
 
     <div v-else class="empty">
-      <div class="empty-icon">€</div>
+      <div class="empty-icon">↓</div>
 
       <h4>Keine Auswahl</h4>
 
       <p>
-        Klicke auf einen Eintrag,
+        Klicke auf eine Ausgabe,
         um die Details anzuzeigen.
       </p>
     </div>
@@ -81,8 +81,9 @@ defineProps<{
 
   margin-bottom: 20px;
 
-  background: #eff6ff;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
 
+  border: 1px solid #fecaca;
   border-radius: 10px;
 }
 
@@ -91,13 +92,13 @@ defineProps<{
 
   margin-bottom: 5px;
 
-  color: #3b82f6;
+  color: #dc2626;
   font-size: 13px;
 }
 
 .amount-box strong {
   font-size: 25px;
-  color: #1e3a8a;
+  color: #7f1d1d;
 }
 
 /* Rows */
@@ -139,11 +140,11 @@ defineProps<{
   align-items: center;
   justify-content: center;
 
-  background: #f3f4f6;
+  background: #fef2f2;
 
   border-radius: 50%;
 
-  color: #9ca3af;
+  color: #dc2626;
 
   font-weight: 700;
 }
