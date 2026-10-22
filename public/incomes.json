@@ -1,23 +1,11 @@
 [
-  {
-    "id": 1,
-    "title": "Gehalt",
-    "category": "Arbeit",
-    "amount": 1850,
-    "date": "2026-09-01"
-  },
-  {
-    "id": 2,
-    "title": "Nachhilfe",
-    "category": "Nebenjob",
-    "amount": 120,
-    "date": "2026-09-15"
-  },
-  {
-    "id": 3,
-    "title": "Geburtstagsgeld",
-    "category": "Geschenk",
-    "amount": 50,
-    "date": "2026-09-24"
-  }
+  { "id": 1, "title": "Gehalt", "category": "Arbeit", "amount": 1850, "date": "2026-09-01" },
+  { "id": 2, "title": "Nachhilfe", "category": "Nebenjob", "amount": 120, "date": "2026-09-15" },
+  { "id": 3, "title": "Geburtstagsgeld", "category": "Geschenk", "amount": 50, "date": "2026-09-24" },
+  { "id": 4, "title": "Gehalt", "category": "Arbeit", "amount": 1850, "date": "2026-07-01" },
+  { "id": 5, "title": "Flohmarkt", "category": "Verkauf", "amount": 65, "date": "2026-07-19" },
+  { "id": 6, "title": "Ferialjob", "category": "Nebenjob", "amount": 420, "date": "2026-08-01" },
+  { "id": 7, "title": "Gehalt", "category": "Arbeit", "amount": 1850, "date": "2026-08-01" },
+  { "id": 8, "title": "Gehalt", "category": "Arbeit", "amount": 1850, "date": "2026-10-01" },
+  { "id": 9, "title": "Nachhilfe", "category": "Nebenjob", "amount": 160, "date": "2026-10-14" }
 ]

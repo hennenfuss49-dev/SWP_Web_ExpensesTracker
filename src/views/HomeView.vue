@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 
+import CategoryChart from '../components/CategoryChart.vue'
+import MonthlyChart from '../components/MonthlyChart.vue'
+
 import type { Expense } from '../types/Expense'
 import type { Income } from '../types/Income'
 
@@ -91,19 +94,9 @@ onMounted(loadData)
       </div>
     </section>
 
-    <section class="info-box">
-      <div>
-        <h3>Starte mit deinen Ausgaben</h3>
-
-        <p>
-          Füge deine ersten Einnahmen oder Ausgaben hinzu,
-          um deine Finanzen zu verwalten.
-        </p>
-      </div>
-
-      <RouterLink to="/expenses" class="secondary-button">
-        Einträge verwalten →
-      </RouterLink>
+    <section class="charts">
+      <CategoryChart :expenses="expenses" />
+      <MonthlyChart :expenses="expenses" :incomes="incomes" />
     </section>
   </div>
 </template>
@@ -153,8 +146,7 @@ onMounted(loadData)
 
 /* Buttons */
 
-.primary-button,
-.secondary-button {
+.primary-button {
   text-decoration: none;
   border-radius: 8px;
 
@@ -198,19 +190,6 @@ onMounted(loadData)
 
 .income-button:hover {
   background: #15803d;
-}
-
-.secondary-button {
-  background: white;
-  color: #2563eb;
-
-  border: 1px solid #dbeafe;
-
-  padding: 10px 16px;
-}
-
-.secondary-button:hover {
-  background: #eff6ff;
 }
 
 /* Cards */
@@ -302,30 +281,12 @@ a.card:hover {
   color: #2563eb;
 }
 
-/* Info */
+/* Charts */
 
-.info-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 24px;
-
-  background: #eff6ff;
-
-  border: 1px solid #dbeafe;
-  border-radius: 14px;
-}
-
-.info-box h3 {
-  margin: 0 0 5px;
-  color: #1e3a8a;
-}
-
-.info-box p {
-  margin: 0;
-  color: #3b82f6;
-  font-size: 14px;
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 18px;
 }
 
 /* Responsive */
@@ -342,14 +303,9 @@ a.card:hover {
     gap: 20px;
   }
 
-  .cards {
+  .cards,
+  .charts {
     grid-template-columns: 1fr;
-  }
-
-  .info-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
   }
 }
 </style>
