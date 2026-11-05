@@ -4,6 +4,8 @@ import { ref, computed, onMounted } from 'vue'
 import CategoryChart from '../components/CategoryChart.vue'
 import MonthlyChart from '../components/MonthlyChart.vue'
 
+import { loadExpenses } from '../services/expenseStorage'
+
 import type { Expense } from '../types/Expense'
 import type { Income } from '../types/Income'
 
@@ -21,12 +23,12 @@ const totalIncomes = computed(() =>
 const balance = computed(() => totalIncomes.value - totalExpenses.value)
 
 async function loadData() {
-  const [expenseResponse, incomeResponse] = await Promise.all([
-    fetch('/expenses.json'),
+  const [expenseData, incomeResponse] = await Promise.all([
+    loadExpenses(),
     fetch('/incomes.json')
   ])
 
-  expenses.value = await expenseResponse.json() as Expense[]
+  expenses.value = expenseData
   incomes.value = await incomeResponse.json() as Income[]
 }
 

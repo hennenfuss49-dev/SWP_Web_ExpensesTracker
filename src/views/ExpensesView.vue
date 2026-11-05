@@ -3,26 +3,42 @@ import { ref, computed, onMounted } from 'vue'
 
 import ExpenseList from '../components/ExpenseList.vue'
 import ExpenseDetail from '../components/ExpenseDetail.vue'
+import ExpenseForm from '../components/ExpenseForm.vue'
+
+import { loadExpenses, saveExpenses } from '../services/expenseStorage'
 
 import type { Expense } from '../types/Expense'
 
 const expenses = ref<Expense[]>([])
 const selectedExpense = ref<Expense | null>(null)
+const showForm = ref(false)
 
 const total = computed(() =>
   expenses.value.reduce((sum, expense) => sum + expense.amount, 0)
 )
 
-async function loadExpenses() {
-  const response = await fetch('/expenses.json')
-  expenses.value = await response.json() as Expense[]
-}
+const categories = computed(() =>
+  [...new Set(expenses.value.map(expense => expense.category))].sort()
+)
 
 function selectExpense(expense: Expense) {
   selectedExpense.value = expense
 }
 
-onMounted(loadExpenses)
+function addExpense(data: Omit<Expense, 'id'>) {
+  const nextId = Math.max(0, ...expenses.value.map(expense => expense.id)) + 1
+  const expense: Expense = { id: nextId, ...data }
+
+  expenses.value = [expense, ...expenses.value]
+  saveExpenses(expenses.value)
+
+  selectedExpense.value = expense
+  showForm.value = false
+}
+
+onMounted(async () => {
+  expenses.value = await loadExpenses()
+})
 </script>
 
 <template>
@@ -39,7 +55,7 @@ onMounted(loadExpenses)
         </p>
       </div>
 
-      <button class="add-button">
+      <button class="add-button" @click="showForm = true">
         + Neue Ausgabe
       </button>
     </div>
@@ -76,6 +92,13 @@ onMounted(loadExpenses)
       </section>
 
     </div>
+
+    <ExpenseForm
+      v-if="showForm"
+      :categories="categories"
+      @save="addExpense"
+      @cancel="showForm = false"
+    />
 
   </div>
 </template>
