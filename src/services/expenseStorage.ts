@@ -1,24 +1,30 @@
+
 import type { Expense } from '../types/Expense'
 
-const STORAGE_KEY = 'expenses'
+const API_URL = '/api/expenses'
 
-// Gespeicherte Ausgaben aus dem localStorage laden,
-// beim ersten Start die Beispieldaten aus expenses.json verwenden
+// Alle Ausgaben aus der SQLite-Datenbank laden
 export async function loadExpenses(): Promise<Expense[]> {
-  const stored = localStorage.getItem(STORAGE_KEY)
+  const response = await fetch(API_URL)
 
-  if (stored) {
-    return JSON.parse(stored) as Expense[]
+  if (!response.ok) {
+    throw new Error('Ausgaben konnten nicht geladen werden')
   }
 
-  const response = await fetch('/expenses.json')
-  const expenses = await response.json() as Expense[]
-
-  saveExpenses(expenses)
-
-  return expenses
+  return await response.json() as Expense[]
 }
 
-export function saveExpenses(expenses: Expense[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses))
+// Alle Ausgaben in der SQLite-Datenbank speichern
+export async function saveExpenses(expenses: Expense[]): Promise<void> {
+  const response = await fetch(API_URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(expenses)
+  })
+
+  if (!response.ok) {
+    throw new Error('Ausgaben konnten nicht gespeichert werden')
+  }
 }
