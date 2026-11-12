@@ -3,26 +3,42 @@ import { ref, computed, onMounted } from 'vue'
 
 import IncomeList from '../components/IncomeList.vue'
 import IncomeDetail from '../components/IncomeDetail.vue'
+import IncomeForm from '../components/IncomeForm.vue'
+
+import { loadIncomes, saveIncomes } from '../services/incomeStorage'
 
 import type { Income } from '../types/Income'
 
 const incomes = ref<Income[]>([])
 const selectedIncome = ref<Income | null>(null)
+const showForm = ref(false)
 
 const total = computed(() =>
   incomes.value.reduce((sum, income) => sum + income.amount, 0)
 )
 
-async function loadIncomes() {
-  const response = await fetch('/incomes.json')
-  incomes.value = await response.json() as Income[]
-}
+const categories = computed(() =>
+  [...new Set(incomes.value.map(income => income.category))].sort()
+)
 
 function selectIncome(income: Income) {
   selectedIncome.value = income
 }
 
-onMounted(loadIncomes)
+function addIncome(data: Omit<Income, 'id'>) {
+  const nextId = Math.max(0, ...incomes.value.map(income => income.id)) + 1
+  const income: Income = { id: nextId, ...data }
+
+  incomes.value = [income, ...incomes.value]
+  saveIncomes(incomes.value)
+
+  selectedIncome.value = income
+  showForm.value = false
+}
+
+onMounted(async () => {
+  incomes.value = await loadIncomes()
+})
 </script>
 
 <template>
@@ -39,7 +55,7 @@ onMounted(loadIncomes)
         </p>
       </div>
 
-      <button class="add-button">
+      <button class="add-button" @click="showForm = true">
         + Neue Einnahme
       </button>
     </div>
@@ -76,6 +92,13 @@ onMounted(loadIncomes)
       </section>
 
     </div>
+
+    <IncomeForm
+      v-if="showForm"
+      :categories="categories"
+      @save="addIncome"
+      @cancel="showForm = false"
+    />
 
   </div>
 </template>
